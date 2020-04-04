@@ -4,7 +4,7 @@
  */
 var ifacedbglevel = window.instrustat.debuglevel
 
-// import sanitizer from './escapeHTML'
+// import sanitizer code port
 var escapeHTML = require('./escapeHTML')
 var Sanitizer = escapeHTML.default()
 
@@ -52,6 +52,41 @@ var iface = {
         this.clearFlag( this.elemsetall )
         return this.allpaths
     },
+    eventsetalldb : null,
+    elemsetalldb  : null,
+    allpathsdb    : [],
+    regeventsetalldb: function ( newelem, newevent ) {
+        this.elemsetalldb = newelem
+        this.eventsetalldb = newevent
+    },
+    setalldb: function( alist ) {
+        var emptylist = []
+        this.allpathsdb = emptylist
+        var varlistitems = alist.split(',')
+        for ( var i = 0; i < varlistitems.length; i++ ) {
+            this.allpathsdb.push( varlistitems[ parseInt(i) ] )
+        }
+        if ( (this.eventsetalldb === null) || (this.elemsetalldb === null) )
+            return
+        this.elemsetalldb.dispatchEvent( this.eventsetalldb )
+    },
+    getalldb: function() {
+        if ( this.allpathsdb.length === 0 )
+            return []
+        this.clearFlag( this.elemsetalldb )
+        return this.allpathsdb
+    },
+    eventrescan : null,
+    elemrescan  : null,
+    regeventrescan: function ( newelem, newevent ) {
+        this.elemrescan = newelem
+        this.eventrescan = newevent
+    },
+    rescan: function() {
+        if ( (this.eventrescan === null) || (this.elemrescan === null) )
+            return
+        this.elemrescan.dispatchEvent( this.eventrescan )
+    },
     eventselected    : null,
     elemselected     : null,
     selectedpath     : '',
@@ -81,25 +116,6 @@ var iface = {
             return ''
         return this.selectedpath
     },
-    eventrescan    : null,
-    elemrescan     : null,
-    regeventrescan: function ( newelem, newevent ) {
-        this.elemrescan = newelem
-        this.eventrescan = newevent
-    },
-    setrescan: function() {
-        try {
-            if ( (this.eventrescan === null) || (this.elemrescan === null) )
-                return
-            this.elemrescan.dispatchEvent( this.eventrescan )
-        }
-        catch (error) {
-            if ( ifacedbglevel > 1 )
-                console.log('iface.setrescan - state machine error',
-                            error)
-            return
-        }
-    },
     eventacksubs    : null,
     elemacksubs     : null,
     acksubspath     : '',
@@ -128,6 +144,73 @@ var iface = {
         if ( (this.acksubspath === null) || (this.acksubspath === '') )
             return ''
         return this.acksubspath
+    },
+    eventackschema    : null,
+    elemackschema     : null,
+    dbschema          : '',
+    regeventackschema: function ( newelem, newevent ) {
+        this.elemackschema = newelem
+        this.eventackschema = newevent
+    },
+    ackschema: function( newschema ) {
+        try {
+            if ( (this.eventackschema === null) || (this.elemackschema === null) )
+                return
+            this.dbschema = newschema
+            if ( ifacedbglevel > 0 )
+                console.log('iface.setackschema - ackschema: ', this.dbschema)
+            this.elemackschema.dispatchEvent( this.eventackschema )
+        }
+        catch (error) {
+            this.dbschema = ''
+            if ( ifacedbglevel > 1 )
+                console.log('iface.setackschema - state machine error',
+                            error)
+            return
+        }
+    },
+    getdbschema: function() {
+        if ( (this.dbschema === null) || (this.dbschema === '') )
+            return ''
+        return this.dbschema
+    },
+    eventgetnew    : null,
+    elemgetnew     : null,
+    regeventgetnew: function ( newelem, newevent ) {
+        this.elemgetnew = newelem
+        this.eventgetnew = newevent
+    },
+    setgetnew: function() {
+        try {
+            if ( (this.eventgetnew === null) || (this.elemgetnew === null) )
+                return
+            this.elemgetnew.dispatchEvent( this.eventgetnew )
+        }
+        catch (error) {
+            if ( ifacedbglevel > 1 )
+                console.log('iface.setgetnew - state machine error',
+                            error)
+            return
+        }
+    },
+    eventgetlaunch    : null,
+    elemgetlaunch     : null,
+    regeventgetlaunch: function ( newelem, newevent ) {
+        this.elemgetlaunch = newelem
+        this.eventgetlaunch = newevent
+    },
+    setgetlaunch: function() {
+        try {
+            if ( (this.eventgetlaunch === null) || (this.elemgetlaunch === null) )
+                return
+            this.elemgetlaunch.dispatchEvent( this.eventgetlaunch )
+        }
+        catch (error) {
+            if ( ifacedbglevel > 1 )
+                console.log('iface.setgetlaunch - state machine error',
+                            error)
+            return
+        }
     },
     eventchgconf    : null,
     elemchgconf     : null,
@@ -175,6 +258,28 @@ var iface = {
         if ( this.value === null )
             return 0.0
         return this.value
+    },
+    eventerrdata    : null,
+    elemerrdata     : null,
+    regeventerrdata: function ( newelem, newevent ) {
+        this.elemerrdata = newelem
+        this.eventerrdata = newevent
+    },
+    errdata: function() {
+        if ( (this.eventerrdata === null) || (this.elemerrdata === null) )
+            return
+        this.elemerrdata.dispatchEvent( this.eventerrdata )
+    },
+    eventretryget    : null,
+    elemretryget     : null,
+    regeventretryget: function ( newelem, newevent ) {
+        this.elemretryget = newelem
+        this.eventretryget = newevent
+    },
+    retryget: function() {
+        if ( (this.eventretryget === null) || (this.elemretryget === null) )
+            return
+        this.elemretryget.dispatchEvent( this.eventretryget )
     },
     eventswapdisp    : null,
     elemswapdisp     : null,
